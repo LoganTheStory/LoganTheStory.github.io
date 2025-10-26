@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Marcus | Logan: Reap & Sow</title>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #050505;
+            color: #f0f0f0;
+            font-family: 'Playfair Display', serif;
+            line-height: 1.7;
+            text-align: center;
+            min-height: 100vh;
+            background-image: radial-gradient(circle at center, rgba(168, 0, 0, 0.05) 0%, rgba(0, 0, 0, 0) 70%), 
+                             url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10"><rect width="10" height="10" fill="rgba(255,255,255,0.02)"/><path d="M0 0h1v1H0zM9 9h1v1H9z" fill="rgba(255,255,255,0.02)"/></svg>');
+        }
+        
+        strong, b {
+            font-weight: 700;
+            color: #ffffff;
+        }
+
+        header {
+            padding: 40px 20px;
+            background-color: #111111;
+            border-bottom: 3px solid #cc0000;
+        }
+
+        header h1 {
+            font-family: 'Roboto Mono', monospace;
+            font-size: 2.5em;
+            letter-spacing: 10px;
+            color: #cc0000;
+            text-transform: uppercase;
+        }
+
+        header p {
+            font-size: 1em;
+            font-style: italic;
+            color: #888;
+            letter-spacing: 2px;
+            margin-top: 5px;
+        }
+
+        main {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 50px 20px;
+        }
+
+        .book-info {
+            margin-bottom: 50px;
+        }
+
+        .book-info h2 {
+            font-family: 'Roboto Mono', monospace;
+            font-size: 3.5em;
+            margin-bottom: 10px;
+            color: #f0f0f0;
+            text-transform: uppercase;
+            text-shadow: 0 0 8px rgba(204, 0, 0, 0.4);
+        }
+
+        .book-info h3 {
+            font-size: 1.5em;
+            color: #cc0000;
+            letter-spacing: 4px;
+        }
+        
+        .preview-small {
+            max-width: 600px;
+            margin: 0 auto 40px;
+            padding: 20px;
+            border: 1px dashed #333;
+            text-align: left;
+            background-color: #0e0e0e;
+        }
+        
+        .preview-small p {
+            font-size: 1em;
+            color: #ccc;
+            margin-bottom: 1em;
+        }
+        
+        .preview-small .dialogue {
+            font-style: italic;
+            color: #ffffff;
+            border-left: 3px solid #cc0000;
+            padding-left: 10px;
+            margin: 1em 0;
+            font-size: 0.9em;
+        }
+
+        #story-wrapper {
+            position: relative;
+            max-width: 1000px;
+            margin: 40px auto;
+            box-shadow: 0 0 40px rgba(0, 0, 0, 0.9), 0 0 15px rgba(204, 0, 0, 0.3);
+            background-color: #111;
+            display: grid;
+            grid-template-columns: 1fr;
+            transition: all 0.5s ease;
+        }
+        
+        @media (min-width: 800px) {
+            #story-wrapper {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+        
+        .page {
+            text-align: left;
+            padding: 35px;
+            min-height: 550px;
+            display: none;
+            border-right: 1px solid #222; 
+            animation: fadeIn 0.5s ease-in-out; 
+        }
+        
+        #story-wrapper .page:nth-child(2n) {
+            border-right: none;
+        }
+        
+        @media (min-width: 800px) {
+            .page {
+                border-bottom: none;
+            }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .page p {
+            margin-bottom: 1.5em;
+            font-size: 1.1em;
+            color: #e0e0e0;
+        }
+
+        .page .dialogue {
+            font-style: italic;
+            color: #ffffff;
+            border-left: 4px solid #cc0000;
+            padding-left: 15px;
+            margin: 1.5em 0;
+            background-color: rgba(26, 26, 26, 0.7);
+            padding-top: 8px;
+            padding-bottom: 8px;
+        }
+
+        #read-button {
+            background-color: #cc0000;
+            color: #ffffff;
+            font-family: 'Roboto Mono', monospace;
+            font-size: 1.5em;
+            padding: 15px 30px;
+            border: none;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            margin: 40px 0;
+            transition: background-color 0.3s ease;
+            box-shadow: 0 4px 15px rgba(204, 0, 0, 0.4);
+        }
+        
+        #read-button:hover {
+            background-color: #ff3333;
+            box-shadow: 0 6px 20px rgba(204, 0, 0, 0.6);
+        }
+
+        .controls {
+            margin-top: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1000px;
+            margin-left: auto;
+            margin-right: auto;
+            padding: 0 10px;
+        }
+
+        .controls button {
+            background-color: #cc0000;
+            color: #ffffff;
+            font-family: 'Roboto Mono', monospace;
+            font-size: 0.9em;
+            padding: 10px 15px;
+            border: none;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            flex-shrink: 0;
+        }
+        
+        .controls button:disabled {
+            background-color: #333;
+            color: #888;
+            cursor: not-allowed;
+        }
+
+        .controls p {
+            font-family: 'Roboto Mono', monospace;
+            font-size: 0.9em;
+            color: #888;
+            padding: 0 10px;
+        }
+
+        .call-to-action {
+            margin-top: 60px;
+            padding: 20px;
+            background-color: #1a1a1a;
+            border: 2px solid #cc0000;
+            border-radius: 5px;
+        }
+        
+        .call-to-action p {
+            font-family: 'Roboto Mono', monospace;
+            font-size: 1.4em;
+            color: #ffffff;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+        
+        .call-to-action span.date {
+            color: #cc0000;
+            font-weight: bold;
+        }
+        
+        .call-to-action span.free {
+            color: #00cc00;
+            font-style: italic;
+        }
+
+        footer {
+            padding: 20px 0;
+            margin-top: 80px;
+            border-top: 1px solid #222;
+            font-size: 0.9em;
+            color: #444;
+            letter-spacing: 1px;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>MARCUS</h1>
+        <p>Official Author Page</p>
+    </header>
+
+    <main>
+        <section class="book-info">
+            <h2>Logan: Reap & Sow</h2>
+            <h3>A THRILLER</h3>
+        </section>
+        
+        <section class="preview-small">
+            <p>
+                Logan watched, his eyes intense as they tracked her every move. She was "KatetheLate," an online figure he knew he would ruin.
+            </p>
+            <p class="dialogue">
+                "I'm consequences," Logan replied.
+            </p>
+            <p>
+                He lunged, and darkness took her. When she woke up, Logan delivered his chilling message:
+            </p>
+            <p class="dialogue">
+                "You reaped a child's innocence, and now, by divine degree, you shall reap consequence."
+            </p>
+            <p style="text-align: right; color: #cc0000;">
+                — Click Read Full Story for the full chapter.
+            </p>
+        </section>
+
+        <button id="read-button" onclick="startReading()">Read Full Story</button>
+
+        <section id="cta-bar" class="call-to-action">
+            <p>The Full Story will be <span class="free">FREE</span> in <span class="date">Late 2025 Or Early 2026</span></p>
+        </section>
+
+        <div id="story-section" style="display:none;">
+            <div id="story-wrapper">
+                
+                <div class="page" data-page="1">
+                    <p>
+                        Logan watched, his eyes intense as they tracked her every move. She interacted with the chat, pasting on the same fake smile—the very one he knew he would ruin later. Her name was Katlin, but to her online followers, she was "KatetheLate."
+                    </p>
+                    <p class="dialogue">
+                        "Never late to being a predator, huh?" Logan muttered to himself.
+                    </p>
+                    <p>
+                        At 11:08, Katlin finally said, "Welp, it seems my time's up."
+                    </p>
+                    <p class="dialogue">
+                        "It sure is," Logan murmured. He started to pack his equipment, ready to kill her.
+                    </p>
+                </div>
+
+                <div class="page" data-page="2">
+                    <p>
+                        He got in his car and set his GPS to the location he had found. The address came from someone who had doxxed her and proven she was a child predator.
+                    </p>
+                    <p>
+                        He arrived at her house and knocked.
+                    </p>
+                    <p class="dialogue">
+                        "Who are you?" Katlin asked.
+                    </p>
+                    <p class="dialogue">
+                        "I'm consequences," Logan replied.
+                    </p>
+                    <p>
+                        He lunged with a bag he had kept hidden, slipping behind her in one swift move. He held the bag tight, cutting off her oxygen and knocking her out.
+                    </p>
+                </div>
+
+                <div class="page" data-page="3">
+                    <p>
+                        Logan caught her body, looking at her with disgust. He put her unconscious body in her car and started the engine to make his way back to his "fishershop." Underneath this shop, he had a wall with cuffs ready for his next victim. He set her body up carefully so as not to wake her up. He then kicked her body to wake her up. "Hey, Katlin," Logan said. "Have you ever heard that saying? It is something like, <strong>'You reap what you sow'</strong>?"
+                    </p>
+                    <p class="dialogue">
+                        "I DID NOTHING!" screamed Katlin. "LET ME GO, YOU PSYCHOPATH!" She screamed again.
+                    </p>
+                </div>
+
+                <div class="page" data-page="4">
+                    <p>
+                        "You know I would believe you if I didn't have evidence," Logan said.
+                    </p>
+                    <p class="dialogue">
+                        "What evidence?" Katlin said under her breath.
+                    </p>
+                    <p>
+                        "The evidence of you trapping and raping that 17-year-old kid. You're 24, sicko," said Logan.
+                    </p>
+                    <p class="dialogue">
+                        "Okay, get it over with. Arrest me," said Katlin.
+                    </p>
+                    <p>
+                        "Oh, sweetie," Logan chuckled. "You've misunderstood this situation. I'm not a police officer. Like I said before, <strong>'I'm consequence.'</strong>"
+                    </p>
+                </div>
+
+                <div class="page" data-page="5">
+                    <p class="dialogue">
+                        "WHAT THE HELL DOES THAT MEAN?" Katlin screamed.
+                    </p>
+                    <p>
+                        "It means I'm here to give you what you deserve. You don't deserve to live in a jail for the rest of your life. Hell, for that matter, you don't deserve to live at all." Said Logan
+                    </p>
+                    <p>
+                        Her heart pounded, a drum against her ribs, as Logan walked over to his arrangement of deadly weapons. He paused, running a finger along the cold steel, then proceeded to ask, his voice silk and terrifying <strong>"Which one shall I use to end your filthy existence?"</strong>
+                    </p>
+                </div>
+
+                 <div class="page" data-page="6">
+                    <p>
+                        Logan pulled a cloth off an object, revealing a wheel marked with three weapons: the blunt <strong>Hammer</strong>, the focused <strong>Switchblade</strong>, and the taut <strong>Garrote</strong>. He held it up for her to see. "See, Katlin, I'm not a judge, I'm truly an instrument."
+                    </p>
+                    <p>
+                        He spun the wheel and, after a while of spinning, the pointer settled on the <strong>Garrote</strong>. Logan accepted the choice with a chilling chuckle and nod, grabbing it.
+                    </p>
+                    <p style="font-size: 1.3em; color: #cc0000; font-weight: bold; margin-top: 30px;">
+                        "You reaped a child's innocence, and now, by divine degree, you shall reap consequence."
+                    </p>
+                </div>
+                
+            </div>
+            
+            <div class="controls">
+                <button id="prev-btn" onclick="changePage(-1)" disabled>Previous Spread</button>
+                <p id="page-indicator">Pages 1-2 of 6</p>
+                <button id="next-btn" onclick="changePage(1)">Next Spread</button>
+            </div>
+        </div>
+    </main>
+    
+    <script>
+        // currentPage now tracks the starting (left-hand) page number of the visible spread (1, 3, 5)
+        let currentPage = 1;
+        const totalPages = 6;
+        
+        function startReading() {
+            document.getElementById('read-button').style.display = 'none';
+            document.getElementById('cta-bar').style.display = 'none';
+            document.querySelector('.preview-small').style.display = 'none';
+            
+            document.getElementById('story-section').style.display = 'block';
+            
+            updatePageContent();
+        }
+
+        function changePage(step) {
+            const isTwoPageLayout = window.innerWidth >= 800;
+            let newPage = currentPage;
+
+            if (isTwoPageLayout) {
+                // In two-page mode, always move the *left page* by 2 (to the next spread)
+                newPage = currentPage + (step * 2);
+            } else {
+                // Single-page mode moves by 1
+                newPage = currentPage + step;
+            }
+
+            // Boundary check
+            if (newPage >= 1 && newPage <= totalPages) {
+                currentPage = newPage;
+            } else if (newPage < 1) {
+                currentPage = 1; // Cannot go before the first page
+            } else if (newPage > totalPages) {
+                // If moving past the end, check if the last page is visible.
+                // If the last page (totalPages) is odd, it's a single page spread at the end.
+                if (isTwoPageLayout && totalPages % 2 === 1 && currentPage === totalPages) {
+                     return; // Already on the last page
+                }
+                
+                // If it's trying to go beyond the last page, set it to the last valid spread start.
+                currentPage = totalPages % 2 === 1 ? totalPages : totalPages - 1;
+            }
+            
+            updatePageContent();
+        }
+
+        function updatePageContent() {
+            const pages = document.querySelectorAll('.page');
+            
+            pages.forEach(page => {
+                page.style.display = 'none';
+            });
+
+            let pagesToShow = [];
+            const isTwoPageLayout = window.innerWidth >= 800;
+            let spreadIndicator = `Page ${currentPage}`;
+
+            if (isTwoPageLayout) {
+                // The current page is always the left page of the spread (e.g., 1, 3, 5)
+                const leftPage = currentPage;
+                const rightPage = leftPage + 1;
+                
+                pagesToShow.push(leftPage);
+                
+                if (rightPage <= totalPages) {
+                    pagesToShow.push(rightPage);
+                    spreadIndicator = `Pages ${leftPage}-${rightPage}`;
+                } else {
+                    // Last page is a single page spread
+                    spreadIndicator = `Page ${leftPage}`;
+                }
+
+            } else {
+                // Single page view: just show the current page
+                pagesToShow.push(currentPage);
+                spreadIndicator = `Page ${currentPage}`;
+            }
+            
+            pagesToShow.forEach(pageNumber => {
+                const pageElement = document.querySelector(`.page[data-page="${pageNumber}"]`);
+                if (pageElement) {
+                    pageElement.style.display = 'block';
+                }
+            });
+
+            const prevBtn = document.getElementById('prev-btn');
+            const nextBtn = document.getElementById('next-btn');
+            const indicator = document.getElementById('page-indicator');
+            
+            // Disable logic:
+            prevBtn.disabled = currentPage === 1;
+            
+            if (isTwoPageLayout) {
+                // Disable Next button if current page is the start of the last full spread, or the single last page
+                const isLastSpread = currentPage === totalPages || currentPage === totalPages - 1;
+                nextBtn.disabled = isLastSpread;
+            } else {
+                 // Single page logic
+                 nextBtn.disabled = currentPage === totalPages;
+            }
+
+            // Update button text and indicator
+            prevBtn.textContent = isTwoPageLayout ? "Previous Spread" : "Previous Page";
+            nextBtn.textContent = isTwoPageLayout ? "Next Spread" : "Next Page";
+            indicator.textContent = `${spreadIndicator} of ${totalPages}`;
+        }
+        
+        window.addEventListener('resize', () => {
+            if (document.getElementById('story-section').style.display === 'block') {
+                updatePageContent();
+            }
+        });
+        
+        document.addEventListener('DOMContentLoaded', updatePageContent);
+    </script>
+
+    <footer>
+        &copy; 2025 Marcus. All Rights Reserved.
+    </footer>
+
+</body>
+</html>
